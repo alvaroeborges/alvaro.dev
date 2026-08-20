@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initActiveTab();
   initTiltEffect();
   initHeroParallax();
+  initHeaderScroll();
 });
 
 // Preferência do usuário por menos animação (acessibilidade)
@@ -206,8 +207,8 @@ function initTiltEffect() {
       const retangulo = card.getBoundingClientRect();
       const x = evento.clientX - retangulo.left;
       const y = evento.clientY - retangulo.top;
-      const rotacaoX = ((y / retangulo.height) - 0.5) * -10;
-      const rotacaoY = ((x / retangulo.width) - 0.5) * 10;
+      const rotacaoX = ((y / retangulo.height) - 0.3) * -10;
+      const rotacaoY = ((x / retangulo.width) - 0.3) * 10;
       card.style.transform = `perspective(700px) rotateX(${rotacaoX}deg) rotateY(${rotacaoY}deg) translateY(-4px)`;
     });
 
@@ -230,12 +231,28 @@ function initHeroParallax() {
 
   cena.addEventListener('mousemove', (evento) => {
     const retangulo = cena.getBoundingClientRect();
-    const relX = (evento.clientX - retangulo.left) / retangulo.width - 0.5;
-    const relY = (evento.clientY - retangulo.top) / retangulo.height - 0.5;
-    palco.style.transform = `rotateY(${relX * 24}deg) rotateX(${relY * -24}deg)`;
+    const relX = (evento.clientX - retangulo.left) / retangulo.width - 0.3;
+    const relY = (evento.clientY - retangulo.top) / retangulo.height - 0.3;
+    palco.style.transform = `rotateY(${relX * 10}deg) rotateX(${relY * -10}deg)`;
   });
 
   cena.addEventListener('mouseleave', () => {
     palco.style.transform = '';
   });
+}
+
+/**
+ * Dá profundidade à barra de abas (header) quando a página
+ * é rolada, aproximando a sensação de um app premium.
+ */
+function initHeaderScroll() {
+  const header = document.getElementById('tabbar');
+  if (!header) return;
+
+  function atualizar() {
+    header.classList.toggle('is-scrolled', window.scrollY > 8);
+  }
+
+  atualizar();
+  window.addEventListener('scroll', atualizar, { passive: true });
 }
