@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initTiltEffect();
   initHeroParallax();
   initHeaderScroll();
+  initThemeToggle();
+  initCommandPalette();
 });
 
 // Preferência do usuário por menos animação (acessibilidade)
@@ -255,4 +257,131 @@ function initHeaderScroll() {
 
   atualizar();
   window.addEventListener('scroll', atualizar, { passive: true });
+}
+
+/**
+ * Alterna entre tema escuro (padrão) e tema claro, guardando
+ * a preferência do visitante no localStorage.
+ */
+function initThemeToggle() {
+  const botao = document.getElementById('themeToggle');
+  if (!botao) return;
+
+  const raiz = document.documentElement;
+
+  let temaSalvo = null;
+  try {
+    temaSalvo = localStorage.getItem('tema');
+  } catch (erro) {
+    // localStorage indisponível (modo privado, etc.) — segue com o padrão.
+  }
+
+  if (temaSalvo === 'light') {
+    raiz.setAttribute('data-theme', 'light');
+    botao.setAttribute('aria-pressed', 'true');
+    botao.setAttribute('aria-label', 'Alternar para tema escuro');
+  }
+
+  botao.addEventListener('click', () => {
+    const claroAtivo = raiz.getAttribute('data-theme') === 'light';
+    const proximoTema = claroAtivo ? 'dark' : 'light';
+
+    if (proximoTema === 'light') {
+      raiz.setAttribute('data-theme', 'light');
+    } else {
+      raiz.removeAttribute('data-theme');
+    }
+
+    botao.setAttribute('aria-pressed', String(proximoTema === 'light'));
+    botao.setAttribute('aria-label', proximoTema === 'light' ? 'Alternar para tema escuro' : 'Alternar para tema claro');
+
+    try {
+      localStorage.setItem('tema', proximoTema);
+    } catch (erro) {
+      // Sem persistência disponível — a escolha vale só para esta sessão.
+    }
+  });
+}
+
+/**
+ * Command palette (Ctrl/Cmd+K): navegação rápida entre seções,
+ * usada também como menu principal no mobile.
+ */
+function initCommandPalette() {
+  const cmdk = document.getElementById('cmdk');
+  const input = document.getElementById('cmdkInput');
+  const lista = document.getElementById('cmdkList');
+  const botaoMenu = document.getElementById('menuBtn');
+  if (!cmdk || !input || !lista || !botaoMenu) return;
+
+  const itens = Array.from(cmdk.querySelectorAll('.cmdk__item'));
+
+  function abrir() {
+    cmdk.hidden = false;
+    document.body.classList.add('cmdk-open');
+    botaoMenu.setAttribute('aria-expanded', 'true');
+    input.value = '';
+    filtrar('');
+    setTimeout(() => input.focus(), 10);
+  }
+
+  function fechar() {
+    cmdk.hidden = true;
+    document.body.classList.remove('cmdk-open');
+    botaoMenu.setAttribute('aria-expanded', 'false');
+    botaoMenu.focus();
+  }
+
+  function filtrar(termo) {
+    const termoNormalizado = termo.trim().toLowerCase();
+    let algumVisivel = false;
+
+    itens.forEach((item) => {
+      const visivel = item.textContent.toLowerCase().includes(termoNormalizado);
+      item.closest('li').style.display = visivel ? '' : 'none';
+      if (visivel) algumVisivel = true;
+    });
+
+    const vazioExistente = lista.querySelector('.cmdk__empty');
+    if (!algumVisivel && !vazioExistente) {
+      const vazio = document.createElement('p');
+      vazio.className = 'cmdk__empty';
+      vazio.textContent = 'Nenhuma seção encontrada.';
+      lista.appendChild(vazio);
+    } else if (algumVisivel && vazioExistente) {
+      vazioExistente.remove();
+    }
+  }
+
+  botaoMenu.addEventListener('click', () => {
+    if (cmdk.hidden) abrir();
+    else fechar();
+  });
+
+  cmdk.querySelectorAll('[data-cmdk-close]').forEach((elemento) => {
+    elemento.addEventListener('click', fechar);
+  });
+
+  itens.forEach((item) => {
+    item.addEventListener('click', () => {
+      const alvo = item.getAttribute('data-target');
+      fechar();
+      if (!alvo) return;
+      const secao = document.querySelector(alvo);
+      if (secao) secao.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    });
+  });
+
+  input.addEventListener('input', () => filtrar(input.value));
+
+  document.addEventListener('keydown', (evento) => {
+    const atalhoAbrir = (evento.metaKey || evento.ctrlKey) && evento.key.toLowerCase() === 'k';
+    if (atalhoAbrir) {
+      evento.preventDefault();
+      if (cmdk.hidden) abrir();
+      else fechar();
+      return;
+    }
+    if (evento.key === 'Escape' && !cmdk.hidden) fechar();
+  });
 }

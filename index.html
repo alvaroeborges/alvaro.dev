@@ -41,11 +41,33 @@
         <span class="tab__dot"></span> contato.js
       </a>
     </nav>
-    <a class="tabbar__cta"
-      href="https://wa.me/5534992276929?text=Ol%C3%A1%2C%20Alvaro!%20Vi%20seu%20site%20e%20quero%20conversar%20sobre%20um%20projeto."
-      target="_blank" rel="noopener">
-      Falar no Whatsapp
-    </a>
+    <div class="tabbar__actions">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+        aria-label="Alternar para tema claro">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path
+            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41">
+          </path>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <a class="tabbar__cta"
+        href="https://wa.me/5534992276929?text=Ol%C3%A1%2C%20Alvaro!%20Vi%20seu%20site%20e%20quero%20conversar%20sobre%20um%20projeto."
+        target="_blank" rel="noopener">
+        Falar no Whatsapp
+      </a>
+
+      <button type="button" class="tabbar__menu-btn" id="menuBtn" aria-label="Abrir navegação rápida"
+        aria-haspopup="dialog" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <main>
@@ -336,7 +358,7 @@
           <div class="project-card__top">
             <span class="project-card__tag">cliente</span>
           </div>
-          <h3>JetCar Estética Automotiva</h3>
+          <h3>RDC Estética Automotiva</h3>
           <p>Landing page para uma estética automotiva de Uberlândia, com animação de brilho no herói, contador de anos
             de atuação e contato direto via WhatsApp.</p>
           <ul class="project-card__stack">
@@ -413,6 +435,39 @@
     <span class="footer__logo">&lt;/&gt;</span>
     <p>Desenvolvido por Álvaro Borges — © <span id="year"></span></p>
   </footer>
+
+  <!-- ===== COMMAND PALETTE (navegação rápida / menu mobile) ===== -->
+  <div class="cmdk" id="cmdk" hidden>
+    <div class="cmdk__backdrop" data-cmdk-close></div>
+    <div class="cmdk__panel" role="dialog" aria-modal="true" aria-label="Navegação rápida">
+      <div class="cmdk__header">
+        <span class="cmdk__prompt">&gt;</span>
+        <input type="text" class="cmdk__input" id="cmdkInput" placeholder="Ir para uma seção..."
+          autocomplete="off" aria-label="Buscar seção">
+        <kbd class="cmdk__esc">esc</kbd>
+      </div>
+      <ul class="cmdk__list" id="cmdkList">
+        <li><button type="button" class="cmdk__item" data-target="#inicio"><span
+              class="cmdk__item-icon">01</span>inicio.js<span class="cmdk__item-hint">Início</span></button></li>
+        <li><button type="button" class="cmdk__item" data-target="#sobre"><span
+              class="cmdk__item-icon">02</span>sobre.js<span class="cmdk__item-hint">Quem sou eu</span></button></li>
+        <li><button type="button" class="cmdk__item" data-target="#servicos"><span
+              class="cmdk__item-icon">03</span>servicos.js<span class="cmdk__item-hint">O que eu entrego</span></button>
+        </li>
+        <li><button type="button" class="cmdk__item" data-target="#processo"><span
+              class="cmdk__item-icon">04</span>processo.js<span class="cmdk__item-hint">Como trabalho</span></button>
+        </li>
+        <li><button type="button" class="cmdk__item" data-target="#stack"><span
+              class="cmdk__item-icon">05</span>stack.js<span class="cmdk__item-hint">Tecnologias</span></button></li>
+        <li><button type="button" class="cmdk__item" data-target="#projetos"><span
+              class="cmdk__item-icon">06</span>projetos.js<span class="cmdk__item-hint">Trabalhos recentes</span></button>
+        </li>
+        <li><button type="button" class="cmdk__item" data-target="#contato"><span
+              class="cmdk__item-icon">07</span>contato.js<span class="cmdk__item-hint">Fale comigo</span></button>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <a href="https://wa.me/5534992276929?text=Ol%C3%A1%2C%20Alvaro!%20Vi%20seu%20site%20e%20quero%20conversar%20sobre%20um%20projeto."
     class="whatsapp-fab" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">
