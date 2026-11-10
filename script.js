@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeaderScroll();
   initThemeToggle();
   initCommandPalette();
+  initLiquidGlass();
 });
 
 // Preferência do usuário por menos animação (acessibilidade)
@@ -383,5 +384,36 @@ function initCommandPalette() {
       return;
     }
     if (evento.key === 'Escape' && !cmdk.hidden) fechar();
+  });
+}
+
+/**
+ * Liquid glass: ativa a refração (filtro SVG #liquid-glass) apenas
+ * no Chromium desktop — Safari/Firefox não aplicam url() no
+ * backdrop-filter, e no celular o custo de GPU não compensa.
+ * Também faz o reflexo especular (.glass::after) seguir o ponteiro.
+ */
+function initLiquidGlass() {
+  const marcas = navigator.userAgentData && navigator.userAgentData.brands;
+  const ehChromium = Array.isArray(marcas) && marcas.some((m) => /Chromium/i.test(m.brand));
+  const ponteiroFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const menosTransparencia = window.matchMedia('(prefers-reduced-transparency: reduce)').matches;
+
+  if (ehChromium && ponteiroFino && !menosTransparencia) {
+    document.documentElement.classList.add('lg-refract');
+  }
+
+  if (!ponteiroFino) return;
+
+  document.querySelectorAll('.glass').forEach((elemento) => {
+    elemento.addEventListener('pointermove', (evento) => {
+      const caixa = elemento.getBoundingClientRect();
+      elemento.style.setProperty('--mx', `${evento.clientX - caixa.left}px`);
+      elemento.style.setProperty('--my', `${evento.clientY - caixa.top}px`);
+    });
+    elemento.addEventListener('pointerleave', () => {
+      elemento.style.removeProperty('--mx');
+      elemento.style.removeProperty('--my');
+    });
   });
 }

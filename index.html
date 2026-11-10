@@ -19,8 +19,17 @@
 
 <body>
 
+  <!-- Filtro de refração do liquid glass (usado via backdrop-filter no Chromium) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="liquid-glass" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="2" seed="7" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="2.5" result="softNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="34" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
   <!-- ===== BARRA DE ABAS (NAVEGAÇÃO) ===== -->
-  <header class="tabbar" id="tabbar">
+  <header class="tabbar glass glass--refract" id="tabbar">
     <div class="tabbar__brand">
       <span class="tabbar__logo">&lt;AB/&gt;</span>
     </div>
@@ -105,7 +114,7 @@
         </div>
 
         <div class="hero__meta reveal" aria-hidden="true">
-          <pre class="code-chip"><code><span class="text-dim">const</span> <span class="text-blue">disponibilidade</span> = {
+          <pre class="code-chip glass glass--refract"><code><span class="text-dim">const</span> <span class="text-blue">disponibilidade</span> = {
   status: <span class="text-green">"aberto a novos projetos"</span>,
   local: <span class="text-green">"Uberlândia, MG"</span>,
   resposta: <span class="text-green">"&lt; 24h"</span>,
@@ -439,7 +448,7 @@
   <!-- ===== COMMAND PALETTE (navegação rápida / menu mobile) ===== -->
   <div class="cmdk" id="cmdk" hidden>
     <div class="cmdk__backdrop" data-cmdk-close></div>
-    <div class="cmdk__panel" role="dialog" aria-modal="true" aria-label="Navegação rápida">
+    <div class="cmdk__panel glass glass--refract" role="dialog" aria-modal="true" aria-label="Navegação rápida">
       <div class="cmdk__header">
         <span class="cmdk__prompt">&gt;</span>
         <input type="text" class="cmdk__input" id="cmdkInput" placeholder="Ir para uma seção..."
